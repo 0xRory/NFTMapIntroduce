@@ -10,13 +10,17 @@ import Approach from "./pages/approach";
 import Services from "./pages/services";
 import About from "./pages/about";
 import Home from "./pages/home";
+import OwnerNFT from "./pages/ownerNFT";
+import MintNFT from "./pages/mintNFT";
 
 const routes = [
   { path: "/", name: "Home", Component: Home },
   { path: "/case-studies", name: "caseStudies", Component: CaseStudies },
   { path: "/approach", name: "approach", Component: Approach },
   { path: "/services", name: "services", Component: Services },
-  { path: "/about-us", name: "about", Component: About }
+  { path: "/about-us", name: "about", Component: About },
+  { path: "/owner-nft", name: "ownerNFT", Component: OwnerNFT },
+  { path: "/mint-nft", name: "mintNFT", Component: MintNFT }
 ];
 
 function debounce(fn, ms) {

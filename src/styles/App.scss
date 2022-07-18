@@ -1,3 +1,6 @@
+@import "~tailwindcss/base";
+@import "~tailwindcss/components";
+@import "~tailwindcss/utilities";
 @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,600,700&display=swap");
 @import "./varibles.scss";
 @import "./breakpoints.scss";
@@ -5,6 +8,7 @@
 @import "./components/banner.scss";
 @import "./components/cases.scss";
 @import "./components/navigation.scss";
+
 
 body,
 html {

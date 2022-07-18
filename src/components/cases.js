@@ -1,23 +1,26 @@
 import React from "react";
+import { Link } from 'react-router-dom'
 import { ReactComponent as CasesNext } from "../assets/arrow-right.svg";
 import { ReactComponent as CasesPrev } from "../assets/arrow-left.svg";
+
 
 const caseStudies = [
   {
     id: 1,
-    subtitle: "Curology",
-    title: "A custom formula for your skin’s unique needs",
-    img: "curology-min"
+    subtitle: "是否擁有NFT",
+    title: "Using Token Gated Membership",
+    img: "curology-min",
+    route: "/owner-nft"
   },
   {
     id: 2,
-    subtitle: "Yourspace",
-    title: "Open space floor plans for you next venture",
+    subtitle: "Mint NFT",
+    title: "Using NFT Drop",
     img: "yourspace-min"
   },
   {
     id: 3,
-    subtitle: "Lumin",
+    subtitle: "分享到社群吧",
     title: "For your best look ever",
     img: "lumin-min"
   }
@@ -37,18 +40,20 @@ const Cases = () => {
         </div>
         <div className='row'>
           {caseStudies.map(caseItem => (
-            <div className='case' key={caseItem.id}>
-              <div className='case-details'>
-                <span>{caseItem.subtitle}</span>
-                <h2>{caseItem.title}</h2>
+            <Link to="/owner-nft">
+              <div className='case' key={caseItem.id}>
+                <div className='case-details'>
+                  <span>{caseItem.subtitle}</span>
+                  <h2>{caseItem.title}</h2>
+                </div>
+                <div className='case-image'>
+                  <img
+                    src={require(`../assets/${caseItem.img}.png`)}
+                    alt={caseItem.title}
+                  />
+                </div>
               </div>
-              <div className='case-image'>
-                <img
-                  src={require(`../assets/${caseItem.img}.png`)}
-                  alt={caseItem.title}
-                />
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
