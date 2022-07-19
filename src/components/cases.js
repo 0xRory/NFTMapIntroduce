@@ -16,13 +16,15 @@ const caseStudies = [
     id: 2,
     subtitle: "Mint NFT",
     title: "Using NFT Drop",
-    img: "yourspace-min"
+    img: "yourspace-min",
+    route: "mint-nft"
   },
   {
     id: 3,
     subtitle: "分享到社群吧",
     title: "For your best look ever",
-    img: "lumin-min"
+    img: "lumin-min",
+    route: "share-nft"
   }
 ];
 
@@ -40,7 +42,7 @@ const Cases = () => {
         </div>
         <div className='row'>
           {caseStudies.map(caseItem => (
-            <Link to="/owner-nft">
+            <Link to={caseItem.route}>
               <div className='case' key={caseItem.id}>
                 <div className='case-details'>
                   <span>{caseItem.subtitle}</span>

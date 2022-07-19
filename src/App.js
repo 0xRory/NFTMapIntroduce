@@ -12,6 +12,7 @@ import About from "./pages/about";
 import Home from "./pages/home";
 import OwnerNFT from "./pages/ownerNFT";
 import MintNFT from "./pages/mintNFT";
+import ShareNFT from "./pages/shareNFT";
 
 const routes = [
   { path: "/", name: "Home", Component: Home },
@@ -20,7 +21,8 @@ const routes = [
   { path: "/services", name: "services", Component: Services },
   { path: "/about-us", name: "about", Component: About },
   { path: "/owner-nft", name: "ownerNFT", Component: OwnerNFT },
-  { path: "/mint-nft", name: "mintNFT", Component: MintNFT }
+  { path: "/mint-nft", name: "mintNFT", Component: MintNFT },
+  { path: "/share-nft", name: "shareNFT", Component: ShareNFT },
 ];
 
 function debounce(fn, ms) {

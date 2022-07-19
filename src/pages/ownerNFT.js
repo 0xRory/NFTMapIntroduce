@@ -5,21 +5,21 @@ import {
     useNFTBalance,  // 確定錢包的 NFT 和 餘額
     //useNetwork,     // 切換網路
     useEditionDrop, // 使用Drop address
+    useNFTDrop,
 } from "@thirdweb-dev/react";
 import { Theme, Button } from 'react-daisyui'
-
+import { Link } from 'react-router-dom'
 
 function truncateAddress(address) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
+
 const OwnerNFT = () => {
-    // Replace this address with your NFT Drop address!
-    const editionDrop = useEditionDrop(
-        "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF"
-    );
+    const editionDrop = useNFTDrop('0x322067594DBCE69A9a9711BC393440aA5e3Aaca1');
     const address = useAddress();
     const connectWithMetamask = useMetamask();
     const { data: balance, isLoading } = useNFTBalance(editionDrop, address, "0");
+    console.log('balance', balance)
     // 判定有沒有address
     if (!address) {
         return (
@@ -50,8 +50,12 @@ const OwnerNFT = () => {
     // if the user is connected and has an NFT from the drop, display text
     if (balance > 0) {
         return (
-            <div>
-                <h2>Congratulations! You have a Shape Membership Card! 🟦🔺🟣</h2>
+            <div className="page">
+                <div className='container'>
+                    <div className='row'>
+                        <h2>恭喜你有擁有NFT 🟦🔺🟣</h2>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -68,7 +72,9 @@ const OwnerNFT = () => {
                                 <p>你的錢包地址：{truncateAddress(address)}</p>
                                 <p>Sorry 你還沒有擁有  NFT</p>
                                 <div class="card-actions justify-end">
-                                    <button class="btn">Go to Mint</button>
+                                    <Link className="btn" to="/mint-nft">
+                                        Go to Mint
+                                    </Link>
                                 </div>
                             </div>
                         </div>

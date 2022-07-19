@@ -1,82 +1,230 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-    useAddress,     // 確定是否有連結錢包（地址）
-    useMetamask,    // 調用Metamask
-    useNFTBalance,  // 確定錢包的 NFT 和 餘額
-    //useNetwork,     // 切換網路
-    useEditionDrop, // 使用Drop address
-} from "@thirdweb-dev/react";
-import { Theme, Button } from 'react-daisyui'
-
+    ChainId,
+    useClaimedNFTSupply,
+    useContractMetadata,
+    useNetwork,
+    useNFTDrop,
+    useAddress,
+    useMetamask,
+    useNetworkMismatch,
+    useUnclaimedNFTSupply,
+    useActiveClaimCondition,
+    useClaimNFT,
+    useWalletConnect,
+    useCoinbaseWallet,
+} from '@thirdweb-dev/react';
+import styles from '../styles/Theme.module.css';
 
 function truncateAddress(address) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 const MintNFT = () => {
-    // Replace this address with your NFT Drop address!
-    const editionDrop = useEditionDrop(
-        "0x1fCbA150F05Bbe1C9D21d3ab08E35D682a4c41bF"
-    );
+    // Put Your NFT Drop Contract address from the dashboard here
+    const myNftDropContractAddress = '0x322067594DBCE69A9a9711BC393440aA5e3Aaca1';
+
+    const nftDrop = useNFTDrop(myNftDropContractAddress);
     const address = useAddress();
     const connectWithMetamask = useMetamask();
-    const { data: balance, isLoading } = useNFTBalance(editionDrop, address, "0");
-    // 判定有沒有address
-    if (!address) {
+    const connectWithWalletConnect = useWalletConnect();
+    const connectWithCoinbaseWallet = useCoinbaseWallet();
+    const isOnWrongNetwork = useNetworkMismatch();
+    const claimNFT = useClaimNFT(nftDrop);
+    const [, switchNetwork] = useNetwork();
+
+    // Load contract metadata
+    const { data: contractMetadata } = useContractMetadata(
+        myNftDropContractAddress,
+    );
+    // Load claimed supply and unclaimed supply
+    const { data: unclaimedSupply } = useUnclaimedNFTSupply(nftDrop);
+    const { data: claimedSupply } = useClaimedNFTSupply(nftDrop);
+    // Load the active claim condition
+    const { data: activeClaimCondition } = useActiveClaimCondition(nftDrop);
+    // Check if there's NFTs left on the active claim phase
+    const isNotReady =
+        activeClaimCondition &&
+        parseInt(activeClaimCondition?.availableSupply) === 0;
+
+    // Check if there's any NFTs left
+    const isSoldOut = unclaimedSupply?.toNumber() === 0;
+    // The amount the user claims
+    const [quantity, setQuantity] = useState(1); // default to 1
+
+    // Loading state while we fetch the metadata
+    if (!nftDrop || !contractMetadata) {
         return (
-            <div className="page">
-                <div className='container'>
-                    <div className='row'>
-                        <Theme dataTheme="light">
-                            <h1>請連結錢包</h1>
-                            <Button size="lg" onClick={connectWithMetamask}>Connect MetaMask</Button>
-                        </Theme>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-    if (isLoading) {
-        return (
-            <div className="page">
+            <div div className="page" >
                 <div className="container">
                     <div className='row'>
-                        <h1>檢查你的錢包...</h1>
+                        {/* <h1>讀取中...</h1> */}
                         <progress max="100" className="progress w-56" />
                     </div>
                 </div>
             </div>
-        );
+        )
     }
-    // if the user is connected and has an NFT from the drop, display text
-    if (balance > 0) {
-        return (
-            <div>
-                <h2>Congratulations! You have a Shape Membership Card! 🟦🔺🟣</h2>
-            </div>
-        );
-    }
+    // Function to mint/claim an NFT
+    const mint = async () => {
+        if (isOnWrongNetwork) {
+            switchNetwork && switchNetwork(ChainId.Mumbai);
+            return;
+        }
 
-    // if there are no NFTs from collection in wallet, display button to mint
+        claimNFT.mutate(
+            { to: address, quantity },
+            {
+                onSuccess: () => {
+                    alert(`Successfully minted NFT${quantity > 1 ? 's' : ''}!`);
+                },
+                onError: (err) => {
+                    console.error(err);
+                    alert(err?.message || 'Something went wrong');
+                },
+            },
+        );
+    };
+
     return (
         <div className="page">
             <div className="container">
-                <div className='row'>
-                    <Theme dataTheme="light">
-                        <div class="card w-96 bg-base-100 shadow-xl">
-                            <figure><img src="https://img.freepik.com/free-vector/omg-wording-comic-speech-bubble-burst_1308-56321.jpg?t=st=1658152998~exp=1658153598~hmac=6ffaee2ea210164e6e664a253ecddf3c0196c2dd20d285cbc09ef6b4aa7d33c9&w=1380" alt="OMG" /></figure>
-                            <div class="card-body">
-                                <p>你的錢包地址：{truncateAddress(address)}</p>
-                                <p>Sorry 你還沒有擁有  NFT</p>
-                                <div class="card-actions justify-end">
-                                    <button class="btn">Go to Mint</button>
+                <div className={styles.mintInfoContainer}>
+                    <div class="card w-96 shadow-xl">
+                        <div>
+                            <figure>
+                                {/* Image Preview of NFTs */}
+                                <img
+                                    className={styles.image}
+                                    src={contractMetadata?.image}
+                                    alt={`${contractMetadata?.name} preview image`}
+                                />
+                            </figure>
+                            {/* Amount claimed so far */}
+                            <div className={styles.mintCompletionArea}>
+                                <div className={styles.mintAreaLeft}>
+                                    <p>Total Minted</p>
+                                </div>
+                                <div className={styles.mintAreaRight}>
+                                    {claimedSupply && unclaimedSupply ? (
+                                        <p>
+                                            {/* Claimed supply so far */}
+                                            <b>{claimedSupply?.toNumber()}</b>
+                                            {' / '}
+                                            {
+                                                // Add unclaimed and claimed supply to get the total supply
+                                                claimedSupply?.toNumber() + unclaimedSupply?.toNumber()
+                                            }
+                                        </p>
+                                    ) : (
+                                        // Show loading state if we're still loading the supply
+                                        <p>讀取中...</p>
+                                    )}
                                 </div>
                             </div>
+                            <>
+                                {/* <p>數量</p> */}
+                                <div className={`${styles.quantityContainer} mt-3 mb-3`}>
+                                    <button
+                                        className={`${styles.quantityControlButton} text-black`}
+                                        onClick={() => setQuantity(quantity - 1)}
+                                        disabled={quantity <= 1}
+                                    >
+                                        -
+                                    </button>
+
+                                    <h4>{quantity}</h4>
+
+                                    <button
+                                        className={`${styles.quantityControlButton} text-black`}
+                                        onClick={() => setQuantity(quantity + 1)}
+                                        disabled={
+                                            quantity >=
+                                            parseInt(
+                                                activeClaimCondition?.quantityLimitPerTransaction ||
+                                                '0',
+                                            )
+                                        }
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </>
                         </div>
-                        {/* <h1>連接錢包為：</h1>
-                        <span className="value">{truncateAddress(address)}</span>
-                        <h2>尚未擁有NFT</h2> */}
-                    </Theme>
+                    </div>
+                    <div className={styles.infoSide}>
+                        <h1>Metadata is</h1>
+                        {/* Title of your NFT Collection */}
+                        <h2>name : {contractMetadata?.name}</h2>
+                        {/* Description of your NFT Collection */}
+                        {/* <p className={styles.description}>{contractMetadata?.description}</p> */}
+                        {/* 顯示認領按鈕或連接錢包按鈕*/}
+                        {address ? (
+                            // Sold out or show the claim button
+                            isSoldOut ? (
+                                <div>
+                                    <h2>賣完了～</h2>
+                                </div>
+                            ) : isNotReady ? (
+                                <div>
+                                    <h2>尚未準備好鑄造</h2>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="flex justify-center mt-3 mb-3">
+                                        <button
+                                            className={`btn`}
+                                            onClick={mint}
+                                            disabled={claimNFT.isLoading}
+                                        >
+                                            {claimNFT.isLoading
+                                                ? 'Minting...'
+                                                : 'Free Mint 🤡'
+                                                // : `Mint${quantity > 1 ? ` ${quantity}` : ''}${activeClaimCondition?.price.eq(0)
+                                                //     ? ' (Free)'
+                                                //     : activeClaimCondition?.currencyMetadata.displayValue
+                                                //         ? ` (${formatUnits(
+                                                //             priceToMint,
+                                                //             activeClaimCondition.currencyMetadata.decimals,
+                                                //         )} ${activeClaimCondition?.currencyMetadata.symbol
+                                                //         })`
+                                                //         : ''
+                                            }
+                                            {/* `} */}
+                                        </button>
+                                    </div>
+                                </>
+                            )
+                        ) : (
+                            <div className={styles.buttons}>
+                                <button
+                                    className="btn"
+                                    onClick={connectWithMetamask}
+                                >
+                                    請連結錢包
+                                </button>
+                                {/* <button
+                                    className={styles.mainButton}
+                                    onClick={connectWithWalletConnect}
+                                >
+                                    Connect with Wallet Connect
+                                </button>
+                                <button
+                                    className={styles.mainButton}
+                                    onClick={connectWithCoinbaseWallet}
+                                >
+                                    Connect with Coinbase Wallet
+                                </button> */}
+                            </div>
+                        )}
+                    </div>
                 </div>
+                {/* Powered by thirdweb */}{' '}
+                {/* <img
+                    src="/logo.png"
+                    alt="thirdweb Logo"
+                    width={135}
+                    className={styles.buttonGapTop}
+                /> */}
             </div>
         </div>
     );
