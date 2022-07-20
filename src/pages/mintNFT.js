@@ -11,30 +11,22 @@ import {
     useUnclaimedNFTSupply,
     useActiveClaimCondition,
     useClaimNFT,
-    useWalletConnect,
-    useCoinbaseWallet,
+    // useWalletConnect,
+    // useCoinbaseWallet,
 } from '@thirdweb-dev/react';
 import styles from '../styles/Theme.module.css';
-import { location, useHistory } from "react-router-dom";
 
 const MintNFT = () => {
-    const history = useHistory();
     // Put Your NFT Drop Contract address from the dashboard here
     const myNftDropContractAddress = '0x322067594DBCE69A9a9711BC393440aA5e3Aaca1';
     const nftDrop = useNFTDrop(myNftDropContractAddress);
     const address = useAddress();
     const connectWithMetamask = useMetamask();
-    const connectWithWalletConnect = useWalletConnect();
-    const connectWithCoinbaseWallet = useCoinbaseWallet();
+    // const connectWithWalletConnect = useWalletConnect();
+    // const connectWithCoinbaseWallet = useCoinbaseWallet();
     const isOnWrongNetwork = useNetworkMismatch();
     const claimNFT = useClaimNFT(nftDrop);
     const [, switchNetwork] = useNetwork();
-
-    // Load contract metadata
-    const { data: contractMetadata, isLoading, error } = useContractMetadata(
-        myNftDropContractAddress
-    );
-
     // Load claimed supply and unclaimed supply
     const { data: unclaimedSupply } = useUnclaimedNFTSupply(nftDrop);
     const { data: claimedSupply } = useClaimedNFTSupply(nftDrop);
@@ -50,8 +42,10 @@ const MintNFT = () => {
     // The amount the user claims
     const [quantity, setQuantity] = useState(1); // default to 1
 
+    // Load contract metadata
+
     // Loading state while we fetch the metadata
-    if (!nftDrop || !contractMetadata) {
+    if (!nftDrop) {
         return (
             <div div className="page" >
                 <div className="container">
@@ -94,9 +88,8 @@ const MintNFT = () => {
                                 {/* Image Preview of NFTs */}
                                 <img
                                     className={styles.image}
-                                    src={contractMetadata?.image}
-                                    alt={`${contractMetadata?.name} preview image`}
-                                />
+                                    src="https://gateway.ipfscdn.io/ipfs/QmehavTe9uX2GvSJYMk2CqYvujo6zWSD7199T5uAYxbXWy/0.gif"
+                                />;
                             </figure>
                             {/* Amount claimed so far */}
                             <div className={styles.mintCompletionArea}>
@@ -153,7 +146,7 @@ const MintNFT = () => {
                     <div className={styles.infoSide}>
                         <h1>Metadata is</h1>
                         {/* Title of your NFT Collection */}
-                        <h2>name : {contractMetadata?.name}</h2>
+                        {/* <h2>name : {contractMetadata?.name}</h2> */}
                         {/* Description of your NFT Collection */}
                         {/* <p className={styles.description}>{contractMetadata?.description}</p> */}
                         {/* 顯示認領按鈕或連接錢包按鈕*/}
