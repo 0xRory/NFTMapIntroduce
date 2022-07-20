@@ -32,7 +32,7 @@ const MintNFT = () => {
 
     // Load contract metadata
     const { data: contractMetadata, isLoading, error } = useContractMetadata(
-        myNftDropContractAddress,
+        myNftDropContractAddress
     );
 
     // Load claimed supply and unclaimed supply
@@ -51,10 +51,6 @@ const MintNFT = () => {
     const [quantity, setQuantity] = useState(1); // default to 1
 
     // Loading state while we fetch the metadata
-    if (error) {
-        //history.push('/mint-nft')
-        history.go(0)
-    }
     if (!nftDrop || !contractMetadata) {
         return (
             <div div className="page" >
