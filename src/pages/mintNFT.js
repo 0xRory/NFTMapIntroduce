@@ -15,11 +15,12 @@ import {
     useCoinbaseWallet,
 } from '@thirdweb-dev/react';
 import styles from '../styles/Theme.module.css';
+import { useHistory } from "react-router-dom";
 
 const MintNFT = () => {
+    const history = useHistory();
     // Put Your NFT Drop Contract address from the dashboard here
     const myNftDropContractAddress = '0x322067594DBCE69A9a9711BC393440aA5e3Aaca1';
-
     const nftDrop = useNFTDrop(myNftDropContractAddress);
     const address = useAddress();
     const connectWithMetamask = useMetamask();
@@ -51,6 +52,8 @@ const MintNFT = () => {
 
     // Loading state while we fetch the metadata
     if (error) {
+
+        history.push('/mint-nft')
         window.location.reload();
     }
     if (!nftDrop || !contractMetadata) {

@@ -3,9 +3,10 @@ import {
     useAddress,     // 確定是否有連結錢包（地址）
     useOwnedNFTs,  // 確定錢包的 NFT 和 餘額
     useNFTDrop,
+    useMetamask,
 
 } from '@thirdweb-dev/react';
-import { Theme } from 'react-daisyui'
+import { Theme, Button } from 'react-daisyui'
 import { NavLink } from "react-router-dom";
 
 const ShareNFT = () => {
@@ -14,12 +15,27 @@ const ShareNFT = () => {
 
     const editionDrop = useNFTDrop(myNftDropContractAddress);
     const address = useAddress();
+    const connectWithMetamask = useMetamask();
     const { data: ownedNFTs, isLoading } = useOwnedNFTs(editionDrop, address);
     // // Load contract metadata
     // const { data: contractMetadata } = useContractMetadata(
     //     myNftDropContractAddress,
     // );
 
+    if (!address) {
+        return (
+            <div className="page">
+                <div className='container'>
+                    <div className='row'>
+                        <Theme dataTheme="light">
+                            <h1>請連結錢包</h1>
+                            <Button size="lg" onClick={connectWithMetamask}>Connect MetaMask</Button>
+                        </Theme>
+                    </div>
+                </div>
+            </div>
+        );
+    }
     if (isLoading) {
         return (
             <div className="page">
@@ -54,13 +70,22 @@ const ShareNFT = () => {
             </div>
         )
     } else {
-        <div className="page">
-            <div className="container">
-                <div className='row'>
-                    <h1>很抱歉你還有有ＮＦＴ😴</h1>
+        return (
+            <div className="page">
+                <div className="container">
+                    <div className='row'>
+                        <Theme dataTheme="light">
+                            <h1>很抱歉你還沒有ＮＦＴ😴
+                                <NavLink exact className="btn btn-outline btn-success" replace to="/">回首頁</NavLink>
+                            </h1>
+
+
+
+                        </Theme>
+                    </div>
                 </div>
             </div>
-        </div>
+        )
     }
 
 }
