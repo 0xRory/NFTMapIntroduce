@@ -8,6 +8,11 @@ import {
 } from '@thirdweb-dev/react';
 import { Theme, Button } from 'react-daisyui'
 import { NavLink } from "react-router-dom";
+import {
+    TwitterIcon,
+    TwitterShareButton,
+} from "react-share";
+
 
 const ShareNFT = () => {
     // Put Your NFT Drop Contract address from the dashboard here
@@ -42,7 +47,7 @@ const ShareNFT = () => {
                 <div className="container">
                     <div className='row'>
                         <h1>檢查你的錢包...</h1>
-                        <progress max="100" className="progress w-56" />
+                        <progress max="100" className="w-56 progress" />
                     </div>
                 </div>
             </div>
@@ -59,6 +64,12 @@ const ShareNFT = () => {
                                 <figure><img loading="lazy" src={contractMetadata?.image} /></figure>
                                 <div class="card-body">
                                     <p>🎉🎉🎉 分享你的 NFT 🎉🎉🎉</p>
+                                    <TwitterShareButton
+                                        title={"WOW MY NFT"}
+                                        url={"https://timely-dusk-caad9a.netlify.app/"}
+                                    >
+                                        <TwitterIcon size={32} round />
+                                    </TwitterShareButton>
                                 </div>
                             </div>
                             <div className="flex justify-end mt-3 mb-3">
@@ -78,9 +89,6 @@ const ShareNFT = () => {
                             <h1>很抱歉你還沒有ＮＦＴ😴
                                 <NavLink exact className="btn btn-outline btn-success" replace to="/">回首頁</NavLink>
                             </h1>
-
-
-
                         </Theme>
                     </div>
                 </div>
