@@ -1,27 +1,24 @@
 import React from "react";
 import {
     useAddress,     // 確定是否有連結錢包（地址）
-    useContractMetadata,
-    useNFTBalance,  // 確定錢包的 NFT 和 餘額
+    useOwnedNFTs,  // 確定錢包的 NFT 和 餘額
     useNFTDrop,
 
 } from '@thirdweb-dev/react';
 import { Theme } from 'react-daisyui'
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const ShareNFT = () => {
     // Put Your NFT Drop Contract address from the dashboard here
     const myNftDropContractAddress = '0x322067594DBCE69A9a9711BC393440aA5e3Aaca1';
 
-    const nftDrop = useNFTDrop(myNftDropContractAddress);
     const editionDrop = useNFTDrop(myNftDropContractAddress);
-    console.log('editionDrop', editionDrop)
     const address = useAddress();
-    const { data: balance, isLoading } = useNFTBalance(editionDrop, address, "0");
-    // Load contract metadata
-    const { data: contractMetadata } = useContractMetadata(
-        myNftDropContractAddress,
-    );
+    const { data: ownedNFTs, isLoading } = useOwnedNFTs(editionDrop, address);
+    // // Load contract metadata
+    // const { data: contractMetadata } = useContractMetadata(
+    //     myNftDropContractAddress,
+    // );
 
     if (isLoading) {
         return (
@@ -35,7 +32,8 @@ const ShareNFT = () => {
             </div>
         );
     }
-    if (balance > 0) {
+    if (ownedNFTs.length > 0) {
+        let contractMetadata = ownedNFTs[0].metadata
         return (
             <div className="page">
                 <div className="container">
@@ -48,7 +46,7 @@ const ShareNFT = () => {
                                 </div>
                             </div>
                             <div className="flex justify-end mt-3 mb-3">
-                                <Link className="btn" to="/">⬅️ 回上一頁</Link>
+                                <NavLink exact className="btn" to="/">⬅️ 回上一頁</NavLink>
                             </div>
                         </Theme>
                     </div>

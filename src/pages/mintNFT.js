@@ -16,9 +16,6 @@ import {
 } from '@thirdweb-dev/react';
 import styles from '../styles/Theme.module.css';
 
-function truncateAddress(address) {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
 const MintNFT = () => {
     // Put Your NFT Drop Contract address from the dashboard here
     const myNftDropContractAddress = '0x322067594DBCE69A9a9711BC393440aA5e3Aaca1';
@@ -33,9 +30,10 @@ const MintNFT = () => {
     const [, switchNetwork] = useNetwork();
 
     // Load contract metadata
-    const { data: contractMetadata } = useContractMetadata(
+    const { data: contractMetadata, isLoading, error } = useContractMetadata(
         myNftDropContractAddress,
     );
+
     // Load claimed supply and unclaimed supply
     const { data: unclaimedSupply } = useUnclaimedNFTSupply(nftDrop);
     const { data: claimedSupply } = useClaimedNFTSupply(nftDrop);
@@ -52,6 +50,9 @@ const MintNFT = () => {
     const [quantity, setQuantity] = useState(1); // default to 1
 
     // Loading state while we fetch the metadata
+    if (error) {
+        window.location.reload();
+    }
     if (!nftDrop || !contractMetadata) {
         return (
             <div div className="page" >

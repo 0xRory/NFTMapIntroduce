@@ -10,11 +10,11 @@ const Navigation = () => {
             <div className='nav-label'>Menu</div>
             <ul className='nav-links'>
               <li>
-                <NavLink to='/case-studies' exact>
-                  Case Studies
+                <NavLink to='/' exact>
+                  go home
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink to='/approach' exact>
                   Approach
                 </NavLink>
@@ -28,7 +28,7 @@ const Navigation = () => {
                 <NavLink to='/about-us' exact>
                   About us
                 </NavLink>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div className='nav-column'>
@@ -37,30 +37,26 @@ const Navigation = () => {
               <ul className='nav-info'>
                 <li className='nav-info-label'>Email</li>
                 <li>
-                  <NavLink to='/contact' exact>
-                    Get in touch with us
-                  </NavLink>
+                  0x1rory@gmail.
                 </li>
-                <li>
+                {/* <li>
                   <NavLink to='/audit' exact>
                     Get a free audit
                   </NavLink>
-                </li>
+                </li> */}
               </ul>
               <ul className='nav-info'>
                 <li className='nav-info-label'>Headquarter</li>
-                <li>Route du Jura 49</li>
-                <li>1700 Fribourg</li>
-                <li>Switzerland</li>
+                <li>Web3 World</li>
               </ul>
-              <ul className='nav-info'>
+              {/* <ul className='nav-info'>
                 <li className='nav-info-label'>Phone</li>
                 <li>+41 (0) 79 510 28 70</li>
               </ul>
               <ul className='nav-info'>
                 <li className='nav-info-label'>Legal</li>
                 <li>Privacy & Cookies</li>
-              </ul>
+              </ul> */}
             </div>
           </div>
         </div>

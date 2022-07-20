@@ -2,13 +2,13 @@ import React from "react";
 import {
     useAddress,     // 確定是否有連結錢包（地址）
     useMetamask,    // 調用Metamask
-    useNFTBalance,  // 確定錢包的 NFT 和 餘額
+    useOwnedNFTs,  // 確定錢包的 NFT 和 餘額
     //useNetwork,     // 切換網路
     useEditionDrop, // 使用Drop address
     useNFTDrop,
 } from "@thirdweb-dev/react";
 import { Theme, Button } from 'react-daisyui'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 function truncateAddress(address) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -18,8 +18,8 @@ const OwnerNFT = () => {
     const editionDrop = useNFTDrop('0x322067594DBCE69A9a9711BC393440aA5e3Aaca1');
     const address = useAddress();
     const connectWithMetamask = useMetamask();
-    const { data: balance, isLoading } = useNFTBalance(editionDrop, address, "0");
-    console.log('balance', balance)
+    const { data: ownedNFTs, isLoading } = useOwnedNFTs(editionDrop, address, "0");
+
     // 判定有沒有address
     if (!address) {
         return (
@@ -48,13 +48,17 @@ const OwnerNFT = () => {
         );
     }
     // if the user is connected and has an NFT from the drop, display text
-    if (balance > 0) {
+    if (ownedNFTs.length > 0) {
         return (
             <div className="page">
                 <div className='container'>
                     <div className='row'>
-                        <h2>恭喜你有擁有NFT 🟦🔺🟣</h2>
+                        <h1>恭喜你有擁有NFT 🟦🔺🟣</h1>
+                        <div className="flex justify-end m-10">
+                            <NavLink exact className="btn btn-outline btn-success" replace to="/share-nft">去分享 🎉</NavLink>
+                        </div>
                     </div>
+
                 </div>
             </div>
         );
@@ -72,9 +76,9 @@ const OwnerNFT = () => {
                                 <p>你的錢包地址：{truncateAddress(address)}</p>
                                 <p>Sorry 你還沒有擁有  NFT</p>
                                 <div class="card-actions justify-end">
-                                    <Link className="btn" to="/mint-nft">
+                                    <NavLink exact className="btn" to="/mint-nft">
                                         Go to Mint
-                                    </Link>
+                                    </NavLink>
                                 </div>
                             </div>
                         </div>

@@ -8,16 +8,17 @@ const Banner = () => {
         <div className='row'>
           <h2>
             <div className='line'>
-              <span>開始 Web3.0 thirdweb套件學習</span>
+              <span>開始 Web3.0 前端套件學習檢視</span>
             </div>
             <div className='line'>
               <span>doooooooooo.</span>
             </div>
           </h2>
-          <div className='btn-row'>
-            <a href='/'>
+          <div className='btn-row bg-black'>
+            <img src={require(`../assets/logo.png`)} />
+            {/* <a href='/'>
               More about us <RightArrow />
-            </a>
+            </a> */}
           </div>
         </div>
       </div>
