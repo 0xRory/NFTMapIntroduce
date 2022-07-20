@@ -52,9 +52,7 @@ const MintNFT = () => {
 
     // Loading state while we fetch the metadata
     if (error) {
-
         history.push('/mint-nft')
-        window.location.reload();
     }
     if (!nftDrop || !contractMetadata) {
         return (
@@ -62,7 +60,7 @@ const MintNFT = () => {
                 <div className="container">
                     <div className='row'>
                         {/* <h1>讀取中...</h1> */}
-                        <progress max="100" className="progress w-56" />
+                        <progress max="100" className="w-56 progress" />
                     </div>
                 </div>
             </div>
