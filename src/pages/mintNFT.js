@@ -15,7 +15,7 @@ import {
     useCoinbaseWallet,
 } from '@thirdweb-dev/react';
 import styles from '../styles/Theme.module.css';
-import { useHistory } from "react-router-dom";
+import { location, useHistory } from "react-router-dom";
 
 const MintNFT = () => {
     const history = useHistory();
@@ -52,7 +52,8 @@ const MintNFT = () => {
 
     // Loading state while we fetch the metadata
     if (error) {
-        history.push('/mint-nft')
+        //history.push('/mint-nft')
+        history.go(0)
     }
     if (!nftDrop || !contractMetadata) {
         return (
